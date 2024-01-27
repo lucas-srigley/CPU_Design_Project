@@ -10,12 +10,10 @@ module ALU_tb;
 	
 	initial
 		begin
-			input_a <= 2;
+			input_a <= 10;
 			input_b <= 3;
-			opcode <= 0;
-			
-		#200 
-			opcode <= 1;
+			opcode <= 2;
+			#200;
 		end
 	
 endmodule
