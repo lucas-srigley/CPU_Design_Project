@@ -2,7 +2,7 @@
 module ALU_tb;
 
 	reg[31:0] input_a, input_b;
-	reg[3:0] opcode;
+	reg[7:0] opcode;
 	
 	wire[31:0] ALU_result;
 	
@@ -11,8 +11,8 @@ module ALU_tb;
 	initial
 		begin
 			input_a <= 10;
-			input_b <= 3;
-			opcode <= 2;
+			input_b <= 5;
+			opcode <= 5;
 			#200;
 		end
 	

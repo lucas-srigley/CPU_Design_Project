@@ -1,4 +1,4 @@
-module DataPath(
+ module DataPath(
 	input wire clock, clear,
 	input wire [31:0] A, 
 	input wire [31:0] RegisterAImmediate,
@@ -15,7 +15,7 @@ register RA(clear, clock, RAin, RegisterAImmediate, BusMuxInRA);
 register RB(clear, clock, RBin, BusMuxOut, BusMuxInRB);
 
 // adder
-adder add(A, BusMuxOut, Zregin);
+ripple_carry_adder add(A, BusMuxOut, Zregin);
 register RZ(clear, clock, RZin, Zregin, BusMuxInRZ);
 
 //Bus
