@@ -14,26 +14,25 @@ parameter Default = 4'b0000, Reg_load1a = 4'b0001, Reg_load1b = 4'b0010, Reg_loa
 R2in, R3in, Clock, Mdatain);
 // add test logic here
 initial
- begin
- Clock = 0;
-    repeat (100) @(posedge Clock);
-    $finish; 
+	begin
+		Clock = 0;
+		forever #10 Clock = ~ Clock;
 end
 always @(posedge Clock) // finite state machine; if clock rising-edge
  begin
  case (Present_state)
-Default : Present_state = Reg_load1a;
-Reg_load1a : Present_state = Reg_load1b;
-Reg_load1b : Present_state = Reg_load2a;
-Reg_load2a : Present_state = Reg_load2b;
-Reg_load2b : Present_state = Reg_load3a;
-Reg_load3a : Present_state = Reg_load3b;
-Reg_load3b : Present_state = T0;
-T0 : Present_state = T1;
-T1 : Present_state = T2;
-T2 : Present_state = T3;
-T3 : Present_state = T4;
-T4 : Present_state = T5;
+Default : #50 Present_state = Reg_load1a;
+Reg_load1a : #50 Present_state = Reg_load1b;
+Reg_load1b : #50 Present_state = Reg_load2a;
+Reg_load2a : #50 Present_state = Reg_load2b;
+Reg_load2b : #50 Present_state = Reg_load3a;
+Reg_load3a : #50 Present_state = Reg_load3b;
+Reg_load3b : #50 Present_state = T0;
+T0 : #50 Present_state = T1;
+T1 : #50 Present_state = T2;
+T2 : #50 Present_state = T3;
+T3 : #50 Present_state = T4;
+T4 : #50 Present_state = T5;
 
  endcase
  end
