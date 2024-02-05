@@ -1,11 +1,26 @@
-module MDR (
-    input wire clear,
-    input wire clock,
-    input wire MDRin,
-    input wire [31:0] BusMuxOut, Mdatain,
-    output wire [31:0] Q, D
-);
+module MDR(
 
-mux mux2to1(BusMuxOut, Mdatain, Read, D);
+	#(parameter VAL = 0)(
+	input wire clr, 
+	input wire clk, 
+	input wire enable, 
+	input wire read,
+	input wire [31:0] BusMuxOut,
+	input wire [31:0] Mdatain, 
+	output reg [31:0] qOut
+	
+); 
 
-assign Q = mux2to1.Q;
+	assign dIn = (read == 1)? Mdatain : BusMuxOut;
+	
+	always@(posedge clk or negedge clr)
+		begin 
+			if(clr == 0)
+				qout <= 0; 
+			else if (enable)
+				qOut <= dIn;
+			
+		end
+		inital qOut = VAL; 
+endmodule 
+	
