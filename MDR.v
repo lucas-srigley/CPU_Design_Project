@@ -1,6 +1,4 @@
-module MDR(
-
-	#(parameter VAL = 0)(
+module MDR #(parameter VAL = 0)(
 	input wire clr, 
 	input wire clk, 
 	input wire enable, 
@@ -11,16 +9,14 @@ module MDR(
 	
 ); 
 
-	assign dIn = (read == 1)? Mdatain : BusMuxOut;
-	
 	always@(posedge clk or negedge clr)
 		begin 
 			if(clr == 0)
-				qout <= 0; 
+				qOut <= 0; 
 			else if (enable)
-				qOut <= dIn;
+				qOut <= read ? Mdatain : BusMuxOut;
+	
 			
 		end
-		inital qOut = VAL; 
 endmodule 
 	

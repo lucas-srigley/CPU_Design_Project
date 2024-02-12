@@ -21,18 +21,18 @@ end
 always @(posedge Clock) // finite state machine; if clock rising-edge
  begin
  case (Present_state)
-Default : #50 Present_state = Reg_load1a;
-Reg_load1a : #50 Present_state = Reg_load1b;
-Reg_load1b : #50 Present_state = Reg_load2a;
-Reg_load2a : #50 Present_state = Reg_load2b;
-Reg_load2b : #50 Present_state = Reg_load3a;
-Reg_load3a : #50 Present_state = Reg_load3b;
-Reg_load3b : #50 Present_state = T0;
-T0 : #50 Present_state = T1;
-T1 : #50 Present_state = T2;
-T2 : #50 Present_state = T3;
-T3 : #50 Present_state = T4;
-T4 : #50 Present_state = T5;
+Default : #40 Present_state = Reg_load1a;
+Reg_load1a : #40 Present_state = Reg_load1b;
+Reg_load1b : #40 Present_state = Reg_load2a;
+Reg_load2a : #40 Present_state = Reg_load2b;
+Reg_load2b : #40 Present_state = Reg_load3a;
+Reg_load3a : #40 Present_state = Reg_load3b;
+Reg_load3b : #40 Present_state = T0;
+T0 : #40 Present_state = T1;
+T1 : #40 Present_state = T2;
+T2 : #40 Present_state = T3;
+T3 : #40 Present_state = T4;
+T4 : #40 Present_state = T5;
 
  endcase
  end
@@ -51,29 +51,29 @@ Reg_load1a: begin
 Mdatain <= 32'h00000012;
 Read = 0; MDRin = 0; // the first zero is there for completeness
 #10 Read <= 1; MDRin <= 1;
-#15 Read <= 0; MDRin <= 0;
+#20 Read <= 0; MDRin <= 0;
 end
  Reg_load1b: begin
  #10 MDRout <= 1; R2in <= 1;
- #15 MDRout <= 0; R2in <= 0; // initialize R2 with the value $12
+ #20 MDRout <= 0; R2in <= 0; // initialize R2 with the value $12
 end
 Reg_load2a: begin
 Mdatain <= 32'h00000014;
 #10 Read <= 1; MDRin <= 1;
-#15 Read <= 0; MDRin <= 0;
+#20 Read <= 0; MDRin <= 0;
 end
  Reg_load2b: begin
  #10 MDRout <= 1; R3in <= 1;
- #15 MDRout <= 0; R3in <= 0; // initialize R3 with the value $14
+ #20 MDRout <= 0; R3in <= 0; // initialize R3 with the value $14
 end
 Reg_load3a: begin
 Mdatain <= 32'h00000018;
 #10 Read <= 1; MDRin <= 1;
-#15 Read <= 0; MDRin <= 0;
+#20 Read <= 0; MDRin <= 0;
 end
  Reg_load3b: begin
  #10 MDRout <= 1; R1in <= 1;
- #15 MDRout <= 0; R1in <= 0; // initialize R1 with the value $18
+ #20 MDRout <= 0; R1in <= 0; // initialize R1 with the value $18
 end
 T0: begin // see if you need to de-assert these signals
 PCout <= 1; MARin <= 1; IncPC <= 1; Zin <= 1;
