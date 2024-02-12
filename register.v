@@ -15,6 +15,5 @@ module register #(parameter VAL = 0)(
 				qOut <= dIn;
 			
 		end
-		initial qOut = VAL; 
 endmodule 
 	

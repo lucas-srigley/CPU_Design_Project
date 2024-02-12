@@ -4,11 +4,11 @@ module datapath_tb;
  reg PCout, Zlowout, MDRout, R2out, R3out; // add any other signals to see in your simulation
  reg MARin, Zin, PCin, MDRin, IRin, Yin;
  reg IncPC, Read, AND, R1in, R2in, R3in;
- reg Clock;
+ reg Clock;s
  reg [31:0] Mdatain;
 parameter Default = 4'b0000, Reg_load1a = 4'b0001, Reg_load1b = 4'b0010, Reg_load2a = 4'b0011,
 	Reg_load2b = 4'b0100, Reg_load3a = 4'b0101, Reg_load3b = 4'b0110, T0 = 4'b0111,
- T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010, T4 = 4'b1011, T5 = 4'b1100;
+T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010, T4 = 4'b1011, T5 = 4'b1100;
  reg [3:0] Present_state = Default; 
  DataPath DUT(PCout, Zlowout, MDRout, R2out, R3out, MARin, Zin, PCin, MDRin, IRin, Yin, IncPC, Read, AND, R1in,
 R2in, R3in, Clock, Mdatain);
@@ -51,29 +51,29 @@ Reg_load1a: begin
 Mdatain <= 32'h00000012;
 Read = 0; MDRin = 0; // the first zero is there for completeness
 #10 Read <= 1; MDRin <= 1;
-#15 Read <= 0; MDRin <= 0;
+#20 Read <= 0; MDRin <= 0;
 end
  Reg_load1b: begin
  #10 MDRout <= 1; R2in <= 1;
- #15 MDRout <= 0; R2in <= 0; // initialize R2 with the value $12
+ #20 MDRout <= 0; R2in <= 0; // initialize R2 with the value $12
 end
 Reg_load2a: begin
 Mdatain <= 32'h00000014;
 #10 Read <= 1; MDRin <= 1;
-#15 Read <= 0; MDRin <= 0;
+#20 Read <= 0; MDRin <= 0;
 end
  Reg_load2b: begin
  #10 MDRout <= 1; R3in <= 1;
- #15 MDRout <= 0; R3in <= 0; // initialize R3 with the value $14
+ #20 MDRout <= 0; R3in <= 0; // initialize R3 with the value $14
 end
 Reg_load3a: begin
 Mdatain <= 32'h00000018;
 #10 Read <= 1; MDRin <= 1;
-#15 Read <= 0; MDRin <= 0;
+#20 Read <= 0; MDRin <= 0;
 end
  Reg_load3b: begin
  #10 MDRout <= 1; R1in <= 1;
- #15 MDRout <= 0; R1in <= 0; // initialize R1 with the value $18
+ #20 MDRout <= 0; R1in <= 0; // initialize R1 with the value $18
 end
 T0: begin // see if you need to de-assert these signals
 PCout <= 1; MARin <= 1; IncPC <= 1; Zin <= 1;

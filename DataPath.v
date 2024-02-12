@@ -2,20 +2,21 @@
 	input wire clock, clear,
 	input wire [31:0] RegisterAImmediate,
 	input wire RZout, R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, 
-					R10out, R11out, R12out, R13out, R14out, R15out, HIout, LOout, MDRout,
+					R10out, R11out, R12out, R13out, R14out, R15out, HIout, LOout, MDRout, PCout,
+					Zhighout, Zlowout,
 					
-	input wire R0in, R1in, R2in, R3in, R4in, R5in, R6in, R7in, R8in, R9in, 
+	input wire RZin, R0in, R1in, R2in, R3in, R4in, R5in, R6in, R7in, R8in, R9in, 
 					R10in, R11in, R12in, R13in, R14in, R15in, 
-					IRin, HIin, LOin, MARin, MDRin, RZin
+					IRin, HIin, LOin, MARin, MDRin
 );
 
 		
 wire [31:0] BusMuxInrZ,  
 				BusMuxInr0, BusMuxInr1, BusMuxInr2, BusMuxInr3, BusMuxInr4, BusMuxInr5, BusMuxInr6, BusMuxInr7, 
 				BusMuxInr8, BusMuxInr9, BusMuxInr10, BusMuxInr11, BusMuxInr12, BusMuxInr13, BusMuxInr14, BusMuxInr15,
-				BusMuxInLO, BusMuxInHI, BusMuxInMAR;
+				BusMuxInLO, BusMuxInHI, BusMuxInMAR, BusMuxInMDR, BusMuxInPC, BusMuxInZhigh, BusMuxInZlow;
 
-wire [31: 0] BusMuxOut;
+wire [31:0] BusMuxOut;
 
 wire [31:0] Zregin;
 
@@ -32,14 +33,14 @@ reg [31:0] Mdatain;
 Bus bus(BusMuxInrZ,  
 			BusMuxInr0, BusMuxInr1, BusMuxInr2, BusMuxInr3, BusMuxInr4, BusMuxInr5, BusMuxInr6, BusMuxInr7, 
 			BusMuxInr8, BusMuxInr9, BusMuxInr10, BusMuxInr11, BusMuxInr12, BusMuxInr13, BusMuxInr14, BusMuxInr15,
-		BusMuxInLO, BusMuxInHI, BusMuxInMDR,
+			BusMuxInLO, BusMuxInHI, BusMuxInMAR, BusMuxInMDR, BusMuxInPC, BusMuxInZhigh, BusMuxInZlow,
 			RZout, R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, 
 			R10out, R11out, R12out, R13out, R14out, R15out, 
-			HIout, LOout, MDRout,
+			HIout, LOout, MDRout, PCout, Zhighout, Zlowout,
 			BusMuxOut);
 		
 // adder
-ripple_carry_adder add(A, BusMuxOut, Zregin);
+//ripple_carry_adder add(A, BusMuxOut, Zregin);
 
 
 register RZ (clear, clock, RZin, Zregin, BusMuxInrZ);
