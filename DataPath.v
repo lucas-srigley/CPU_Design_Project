@@ -1,7 +1,7 @@
  module DataPath(
 	input wire clock, clear,
 	input wire [31:0] RegisterAImmediate,
-	input wire RZout, RAout, RBout, R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, 
+	input wire RZout, R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, 
 					R10out, R11out, R12out, R13out, R14out, R15out, HIout, LOout, MDRout,
 					
 	input wire R0in, R1in, R2in, R3in, R4in, R5in, R6in, R7in, R8in, R9in, 
@@ -10,10 +10,10 @@
 );
 
 		
-wire [31:0] BusMuxInIR, BusMuxInHI, BusMuxInLO, BusMuxInMAR, 
+wire [31:0] BusMuxInrZ,  
 				BusMuxInr0, BusMuxInr1, BusMuxInr2, BusMuxInr3, BusMuxInr4, BusMuxInr5, BusMuxInr6, BusMuxInr7, 
 				BusMuxInr8, BusMuxInr9, BusMuxInr10, BusMuxInr11, BusMuxInr12, BusMuxInr13, BusMuxInr14, BusMuxInr15,
-				BusMuxInrZ;
+				BusMuxInLO, BusMuxInHI, BusMuxInMAR;
 
 wire [31: 0] BusMuxOut;
 
@@ -29,11 +29,11 @@ reg [31:0] Mdatain;
 
 
 //Bus
-Bus bus(BusMuxInIR, BusMuxInHI, BusMuxInLO, BusMuxInMAR, 
+Bus bus(BusMuxInrZ,  
 			BusMuxInr0, BusMuxInr1, BusMuxInr2, BusMuxInr3, BusMuxInr4, BusMuxInr5, BusMuxInr6, BusMuxInr7, 
 			BusMuxInr8, BusMuxInr9, BusMuxInr10, BusMuxInr11, BusMuxInr12, BusMuxInr13, BusMuxInr14, BusMuxInr15,
-			BusMuxInrZ, 
-			RZout, RAout, RBout, R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, 
+		BusMuxInLO, BusMuxInHI, BusMuxInMDR,
+			RZout, R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, 
 			R10out, R11out, R12out, R13out, R14out, R15out, 
 			HIout, LOout, MDRout,
 			BusMuxOut);
@@ -63,5 +63,14 @@ register r13 (clear, clock, R13in, BusMuxOut, BusMuxInr13);
 register r14 (clear, clock, R14in, BusMuxOut, BusMuxInr14);
 register r15 (clear, clock, R15in, BusMuxOut, BusMuxInr15);
 	 
+//special use general registers
+register IR_r16 (clear, clock, IRin, BusMuxOut, BusMuxInIR);
+register HI_r17 (clear, clock, HIin, BusMuxOut, BusMuxInHI);
+register LO_r18 (clear, clock, LOin, BusMuxOut, BusMuxInLO);
+register MAR_r19 (clear, clock, MARin, BusMuxOut, BusMuxInMAR);
+
+//MDR register	 
+MDR MDR_r20 (clear, clock, MDRin, Read, BusMuxOut, Mdatain, BusMuxInMDR);
+
 	 
 endmodule
