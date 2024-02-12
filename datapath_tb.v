@@ -21,18 +21,18 @@ end
 always @(posedge Clock) // finite state machine; if clock rising-edge
  begin
  case (Present_state)
-Default : #50 Present_state = Reg_load1a;
-Reg_load1a : #50 Present_state = Reg_load1b;
-Reg_load1b : #50 Present_state = Reg_load2a;
-Reg_load2a : #50 Present_state = Reg_load2b;
-Reg_load2b : #50 Present_state = Reg_load3a;
-Reg_load3a : #50 Present_state = Reg_load3b;
-Reg_load3b : #50 Present_state = T0;
-T0 : #50 Present_state = T1;
-T1 : #50 Present_state = T2;
-T2 : #50 Present_state = T3;
-T3 : #50 Present_state = T4;
-T4 : #50 Present_state = T5;
+Default : #40 Present_state = Reg_load1a;
+Reg_load1a : #40 Present_state = Reg_load1b;
+Reg_load1b : #40 Present_state = Reg_load2a;
+Reg_load2a : #40 Present_state = Reg_load2b;
+Reg_load2b : #40 Present_state = Reg_load3a;
+Reg_load3a : #40 Present_state = Reg_load3b;
+Reg_load3b : #40 Present_state = T0;
+T0 : #40 Present_state = T1;
+T1 : #40 Present_state = T2;
+T2 : #40 Present_state = T3;
+T3 : #40 Present_state = T4;
+T4 : #40 Present_state = T5;
 
  endcase
  end
