@@ -1,4 +1,4 @@
-module MDR #(parameter VAL = 0)(
+module MDR (
 	input wire clr, 
 	input wire clk, 
 	input wire enable, 

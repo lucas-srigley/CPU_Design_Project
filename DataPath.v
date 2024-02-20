@@ -1,4 +1,5 @@
- module DataPath(
+
+module DataPath(
 	input wire clock, clear,
 	input wire [31:0] RegisterAImmediate,
 	input wire RZout, R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, 
@@ -26,6 +27,7 @@ wire [31:0] Y;
 reg [31:0] Read;
 
 reg [31:0] Mdatain;
+
 
 
 //Bus
@@ -72,5 +74,7 @@ register MAR_r19 (clear, clock, MARin, BusMuxOut, BusMuxInMAR);
 //MDR register	 
 MDR MDR_r20 (clear, clock, MDRin, Read, BusMuxOut, Mdatain, BusMuxInMDR);
 
+
+//ALU test_ALU (R1in, R2in, R3in, Mdatain, Z);
 	 
 endmodule
