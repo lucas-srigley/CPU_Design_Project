@@ -1,20 +1,19 @@
-module MDR #(parameter VAL = 0)(
-	input wire clr, 
-	input wire clk, 
-	input wire enable, 
-	input wire read,
-	input wire [31:0] BusMuxOut,
-	input wire [31:0] Mdatain, 
-	output reg [31:0] qOut
+module MDR(
+	input clear, clock, enable, read,
+	input [31:0] BusMuxOut,
+	input [31:0] Mdatain, 
+	output wire [31:0] BusMuxIn
 ); 
-
 	
-	always@(posedge clk or negedge clr)
+reg [31:0]q;
+always @ (posedge clock)
 		begin 
-			if(clr == 0)
-				qOut <= 0; 
-			else if (enable)
-				qOut <= read ? Mdatain : BusMuxOut;
+			if (clear) begin
+				q <= {31{1'b0}};
+			end
+			else if (enable) begin
+				q <= read ? Mdatain : BusMuxOut;
+			end
 		end
-endmodule 
-	
+	assign BusMuxIn = q[31:0];
+endmodule
