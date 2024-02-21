@@ -29,16 +29,19 @@ alu adder (sum, A, M, 1'b0);
 alu subtracter (difference, A, ~M, 1'b1);
 assign prod = {A, Q};
 assign busy = (count < 8);
+
 endmodule
+
 //The following is an alu.
 //It is an adder, but capable of subtraction:
 //Recall that subtraction means adding the two's complement--
 //a - b = a + (-b) = a + (inverted b + 1)
 //The 1 will be coming in as cin (carry-in)
-module alu(out, a, b, cin);
-output [7:0] out;
-input [7:0] a;
-input [7:0] b;
+module alu(C, A, B, cin);
+output [7:0] C;
+input [7:0] A;
+input [7:0] B;
 input cin;
-assign out = a + b + cin;
+assign out = A + B + cin;
+
 endmodule

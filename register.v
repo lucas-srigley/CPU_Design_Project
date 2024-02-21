@@ -1,17 +1,20 @@
-module register (
-	input clear, clock, enable, 
-	input [31:0]BusMuxOut,
-	output wire [31:0]BusMuxIn
-);
-reg [31:0]q;
-always @ (posedge clock)
+module register #(parameter VAL = 0)(
+	input wire clr, 
+	input wire clk, 
+	input wire enable, 
+	input wire [31:0] dIn, 
+	output reg [31:0] qOut
+	
+); 
+
+	always@(posedge clk or negedge clr)
 		begin 
-			if (clear) begin
-				q <= {31{1'b0}};
-			end
-			else if (enable) begin
-				q <= BusMuxOut;
-			end
+			if(clr == 0)
+				qOut <= 0; 
+			else if (enable)
+				qOut <= dIn;
+			
 		end
-	assign BusMuxIn = q[31:0];
-endmodule
+		initial qOut = VAL; 
+endmodule 
+	
