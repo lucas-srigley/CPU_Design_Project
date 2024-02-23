@@ -1,17 +1,15 @@
 module ProgramCounter (
-    input wire clear,
-    input wire clock,
-    input wire enable,
-    output reg [31:0] pc
-);
-
-    always @(posedge clock) begin
-        if (clear) begin
-            pc <= 32'h0; // Reset to 0 on clear
-        end
-        else if (enable) begin
-            pc <= pc + 1; // Increment the program counter
-        end
-    end
-
+	input clock, enable, IncPC,
+	input [31:0] inputPC,
+	output reg[31:0] newPC
+	);
+	
+always @ (posedge clock)
+	begin
+		if(IncPC == 1 && enable ==1)
+			newPC <= newPC + 1;
+		else if (enable == 1)
+			newPC <= inputPC;
+	end
+				
 endmodule
