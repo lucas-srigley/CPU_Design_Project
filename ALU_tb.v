@@ -2,7 +2,7 @@
 module ALU_tb;
 
 	reg[31:0] input_a, input_b;
-	reg[7:0] opcode;
+	reg[5:0] opcode;
 	
 	wire[31:0] ALU_result;
 	

@@ -102,4 +102,4 @@ always @(Present_state) // do the required job in each state
 			end
 		endcase
 	end
-endmodule
+endmodule 
