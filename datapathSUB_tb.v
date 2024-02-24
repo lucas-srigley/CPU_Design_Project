@@ -1,9 +1,9 @@
 `timescale 1ns / 10ps
-module datapathAND_tb; 	
+module datapathSUB_tb; 	
 	reg	PCout, ZHighout, Zlowout, MDRout, R2out, R3out, R4out, R5out, R6out, R7out;
 	reg	MARin, PCin, MDRin, IRin, Yin;
 	reg 	IncPC, Read;
-	reg 	[4:0] AND; 
+	reg 	[4:0] SUB; 
 	reg 	R1in, R2in, R3in;
 	reg   R4in, R5in, R6in, R7in, R8in, R9in, R10in, R11in, R12in, R13in, R14in, R15in;
 	reg	HIin, LOin, ZHighIn, ZLowIn, Cin;
@@ -20,7 +20,7 @@ initial Clear = 0;
 DataPath DUT(PCout, ZHighout, Zlowout, MDRout, R2out, R3out, R4out, R5out, R6out, R7out,
 					MARin, PCin, MDRin, IRin, Yin, 
 					IncPC, Read, 
-					AND,
+					SUB,
 					R1in, R2in, R3in, 
 					R4in, R5in, R6in, R7in, R8in, R9in, R10in, R11in, R12in, R13in, R14in, R15in, 
 					HIin, LOin, ZHighIn, ZLowIn, Cin,
@@ -52,14 +52,14 @@ begin
 		endcase
 	end
 
-always @(Present_state)
+always @(Present_state)// do the required job ineach state
 begin
-	case (Present_state)              
+	case (Present_state)              //assert the required signals in each clock cycle
 		Default: begin
-				PCout <= 0;   Zlowout <= 0; ZHighout <= 0;  MDRout<= 0;   
+				PCout <= 0;   Zlowout <= 0; ZHighout <= 0;  MDRout<= 0;   //initialize the signals
 				R2out <= 0;   R3out <= 0;   MARin <= 0;   ZLowIn <= 0;  
 				PCin <=0;   MDRin <= 0;   IRin  <= 0;   Yin <= 0;  
-				IncPC <= 0;   Read <= 0;   AND <= 0;
+				IncPC <= 0;   Read <= 0;   SUB <= 0;
 				R1in <= 0; R2in <= 0; R3in <= 0; Mdatain <= 32'h00000000;
 		end
 		Reg_load1a: begin 
@@ -79,7 +79,7 @@ begin
 		end
 		Reg_load2b: begin
 				#10 MDRout<= 1; R3in <= 1;  
-				#15 MDRout<= 0; R3in <= 0;		// initialize R3 with the value $14 
+				#15 MDRout<= 0; R3in <= 0;		// initialize R3 with the value $14
 		end
 		Reg_load3a: begin 
 				Mdatain <= 32'h00000018;
@@ -88,7 +88,7 @@ begin
 		end
 		Reg_load3b: begin
 				#10 MDRout<= 1; R1in <= 1;  
-				#15 MDRout<= 0; R1in <= 0;		// initialize R1 with the value $18
+				#15 MDRout<= 0; R1in <= 0;		// initialize R1 with the value $18 
 		end
 	
 		T0: begin
@@ -113,7 +113,7 @@ begin
 				#15 R2out<= 0; Yin <= 0;
 		end
 		T4: begin
-				R3out<= 1; AND <= 5'b01010; ZLowIn <= 1; 
+				R3out<= 1; SUB <= 5'b00100; ZLowIn <= 1; 
 				#25 R3out<= 0; ZLowIn <= 0; 
 		end
 		T5: begin
