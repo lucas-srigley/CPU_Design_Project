@@ -1,4 +1,4 @@
-module division(input signed [31:0] A, B, output reg [63:0] result);
+module division(output reg [63:0] result, input signed [31:0] A, B);
 	reg [31:0] upper, lower;
 	always @ (*)
 	begin

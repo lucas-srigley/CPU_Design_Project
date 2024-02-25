@@ -14,8 +14,8 @@ always@(A or B)
 		LocalCarry = 33'd0;
 		for(i = 0; i < 32; i = i + 1)
 		begin
-				Result[i] = A[i]^B[i]^LocalCarry[i];
-				LocalCarry[i+1] = (A[i]&B[i])|(LocalCarry[i]&(A[i]|B[i]));
+				Result[i] = A[i]^B[i]^LocalCarry[i]; //XOR to do single binary sum 
+				LocalCarry[i+1] = (A[i]&B[i])|(LocalCarry[i]&(A[i]|B[i])); //carry for next addition 
 		end
 end
 endmodule

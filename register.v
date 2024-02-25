@@ -1,7 +1,7 @@
 module register (
+	output wire [31:0]BusMuxIn,
 	input clear, clock, enable, 
-	input [31:0]BusMuxOut,
-	output wire [31:0]BusMuxIn
+	input [31:0]BusMuxOut
 );
 reg [31:0]q;
 always @ (posedge clock)

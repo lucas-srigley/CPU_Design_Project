@@ -1,4 +1,4 @@
-module logical_NOT(input wire [31:0] A, output wire [31:0] result);
+module logical_NOT(output wire [31:0] result, input wire [31:0] A);
 
 	assign result = ~A;
 	

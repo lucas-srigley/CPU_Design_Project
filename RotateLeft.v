@@ -1,4 +1,4 @@
-module RotateLeft(input [31:0] A, B, output reg [31:0] result);
+module RotateLeft(output reg [31:0] result, input [31:0] A, B);
 
 integer i;
 

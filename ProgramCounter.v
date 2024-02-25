@@ -1,7 +1,7 @@
 module ProgramCounter (
+	output reg[31:0] newPC,
 	input clock, enable, IncPC,
-	input [31:0] inputPC,
-	output reg[31:0] newPC
+	input [31:0] inputPC
 	);
 	
 always @ (posedge clock)
