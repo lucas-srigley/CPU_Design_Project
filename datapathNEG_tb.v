@@ -63,7 +63,7 @@ begin
 				R6in <= 0; R7in <= 0; R3in <= 0; Mdatain <= 32'h00000000;
 		end
 		Reg_load1a: begin 
-				Mdatain<= 32'h00000012;
+				Mdatain<= 4'b0101;
 				Read = 0; MDRin = 0;	
 				#10 Read <= 1; MDRin <= 1;  
 				#15 Read <= 0; MDRin <= 0;

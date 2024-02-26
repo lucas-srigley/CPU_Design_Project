@@ -18,4 +18,4 @@ always@(A or B)
 				LocalCarry[i+1] = (~A[i]&B[i]) | (LocalCarry[i] & (~A[i]|B[i]));
 		end
 end
-endmodule
+endmodule 

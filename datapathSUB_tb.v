@@ -63,7 +63,7 @@ begin
 				R1in <= 0; R2in <= 0; R3in <= 0; Mdatain <= 32'h00000000;
 		end
 		Reg_load1a: begin 
-				Mdatain<= 32'h00000012;
+				Mdatain<= 20;
 				Read = 0; MDRin = 0;	
 				#10 Read <= 1; MDRin <= 1;  
 				#15 Read <= 0; MDRin <= 0;
@@ -73,7 +73,7 @@ begin
 				#15 MDRout<= 0; R2in <= 0;     // initialize R2 with the value $12
 		end
 		Reg_load2a: begin 
-				Mdatain <= 32'h00000014;
+				Mdatain <= 6;
 				#10 Read <= 1; MDRin <= 1;  
 				#15 Read <= 0; MDRin <= 0;
 		end

@@ -1,4 +1,4 @@
-module booth(input signed [31:0] a, b, output[63:0] Z);
+module booth(input signed [31:0] a, b, output[31:0] Zlowout, Zhighout);
 	reg [2:0] cc[(32 / 2) - 1:0];
 	reg [32:0] pp[(32 / 2) - 1:0];
 	reg[32*2-1:0] spp[(32 / 2) - 1:0];
@@ -39,5 +39,6 @@ module booth(input signed [31:0] a, b, output[63:0] Z);
 		for (j=1; j < (32/2); j = j+1)
 			product = product + spp[j];
 	end
-	assign Z = product;	
-endmodule
+	assign Zlowout = product[31:0];
+	assign Zhighout = product[63:32];	
+endmodule 
