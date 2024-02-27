@@ -22,22 +22,22 @@ module ALU(
 
 				Logical_AND: begin // 3.1
 					Z[31:0] <= and_result[31:0];
-					//Z[63:32] <= 32'd0;
+					
 				end
 				
 				Logical_OR: begin // 3.2
 					Z[31:0] <= or_result[31:0];
-					//Z[63:32] <= 32'd0;
+					
 				end
 				
 				Addition: begin // 3.3
 					Z[31:0] <= add_result[31:0];
-					//Z[63:32] <= 32'd0;
+					
 				end
 				
 				Subtraction: begin // 3.4
 					Z[31:0] <= sub_result[31:0];
-					//Z[63:32] <= 32'd0;
+					
 				end
 				
 				Multiply: begin // 3.5
@@ -52,37 +52,37 @@ module ALU(
 				
 				Shift_R: begin // 3.7
 					Z[31:0] <= shr_result[31:0];
-					//Z[63:32] <= 32'd0;
+					
 				end
 				
 				Shift_Right_A: begin // 3.8
 					Z[31:0] <= shra_result[31:0];
-					//Z[63:32] <= 32'd0;
+					
 				end
 				
 				Shift_L: begin // 3.9
 					Z[31:0] <= shl_result[31:0];
-					//Z[63:32] <= 32'd0;
+					
 				end
 
 				Rotate_R: begin // 3.10
 					Z[31:0] <= ror_result[31:0];
-					//Z[63:32] <= 32'd0;
+					
 				end
 	
 				Rotate_L: begin // 3.11
 					Z[31:0] <= rol_result[31:0];
-					//Z[63:32] <= 32'd0;
+					
 				end
 				
 				Negate: begin // 3.12
 					Z[31:0] <= neg_result[31:0];
-					//Z[63:32] <= 32'd0;
+					
 				end
 
 				Not: begin // 3.13
 					Z[31:0] <= not_result[31:0];
-					//Z[63:32] <= 32'd0;
+					
 				end
 				
 			endcase
