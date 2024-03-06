@@ -1,6 +1,6 @@
 `timescale 1ns / 10ps
 module datapathOR_tb; 	
-	reg	PCout, ZHighout, Zlowout, MDRout, R2out, R3out;
+	reg	PCout, ZHighout, Zlowout, MDRout, R2out, R3out, R4out, R5out, R6out, R7out;
 	reg	MARin, PCin, MDRin, IRin, Yin;
 	reg 	IncPC, Read;
 	reg 	[4:0] OR; 
@@ -17,7 +17,7 @@ reg	[3:0] Present_state= Default;
 
 initial Clear = 0;
 
-DataPath DUT(PCout, ZHighout, Zlowout, MDRout, R2out, R3out, 
+DataPath DUT(PCout, ZHighout, Zlowout, MDRout, R2out, R3out, R4out, R5out, R6out, R7out,
 					MARin, PCin, MDRin, IRin, Yin, 
 					IncPC, Read, 
 					OR,
@@ -70,7 +70,7 @@ begin
 		end
 		Reg_load1b: begin
 				#10 MDRout<= 1; R2in <= 1;  
-				#15 MDRout<= 0; R2in <= 0;     
+				#15 MDRout<= 0; R2in <= 0;     // initialize R2 with the value $12
 		end
 		Reg_load2a: begin 
 				Mdatain <= 32'h00000014;
@@ -79,7 +79,7 @@ begin
 		end
 		Reg_load2b: begin
 				#10 MDRout<= 1; R3in <= 1;  
-				#15 MDRout<= 0; R3in <= 0;
+				#15 MDRout<= 0; R3in <= 0;			// initialize R3 with the value $14
 		end
 		Reg_load3a: begin 
 				Mdatain <= 32'h00000018;
@@ -88,7 +88,7 @@ begin
 		end
 		Reg_load3b: begin
 				#10 MDRout<= 1; R1in <= 1;  
-				#15 MDRout<= 0; R1in <= 0;
+				#15 MDRout<= 0; R1in <= 0;			// initialize R1 with the value $18 
 		end
 	
 		T0: begin

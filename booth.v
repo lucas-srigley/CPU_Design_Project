@@ -1,44 +1,43 @@
-module booth(prod, busy, mc, mp, clk, start);
-output [15:0] prod;
-output busy;
-input [7:0] mc, mp;
-input clk, start;
-reg [7:0] A, Q, M;
-reg Q_1;
-reg [3:0] count;
-wire [7:0] sum, difference;
-always @(posedge clk)
-begin
-if (start) begin
-A <= 8'b0;
-M <= mc;
-Q <= mp;
-Q_1 <= 1'b0;
-count <= 4'b0;
-end
-else begin
-case ({Q[0], Q_1})
-2'b0_1 : {A, Q, Q_1} <= {sum[7], sum, Q};
-2'b1_0 : {A, Q, Q_1} <= {difference[7], difference, Q};
-default: {A, Q, Q_1} <= {A[7], A, Q};
-endcase
-count <= count + 1'b1;
-end
-end
-alu adder (sum, A, M, 1'b0);
-alu subtracter (difference, A, ~M, 1'b1);
-assign prod = {A, Q};
-assign busy = (count < 8);
-endmodule
-//The following is an alu.
-//It is an adder, but capable of subtraction:
-//Recall that subtraction means adding the two's complement--
-//a - b = a + (-b) = a + (inverted b + 1)
-//The 1 will be coming in as cin (carry-in)
-module alu(out, a, b, cin);
-output [7:0] out;
-input [7:0] a;
-input [7:0] b;
-input cin;
-assign out = a + b + cin;
+module booth(input signed [31:0] a, b, output[63:0] Z);
+	reg [2:0] cc[(32 / 2) - 1:0];
+	reg [32:0] pp[(32 / 2) - 1:0];
+	reg[32*2-1:0] spp[(32 / 2) - 1:0];
+	
+	reg [32*2-1:0] product;
+	
+	integer j,i;
+	
+	wire [32:0] inv_a;
+	assign inv_a = {~a[31], ~a} +1;
+	
+	always @ (a or b or inv_a) 
+	begin
+		cc[0] = {b[1], b[0], 1'b0};
+		
+		for (j=1; j < (32/2); j = j+1)
+			cc[j] = {b[2*j+1], b[2*j], b[2*j-1]};
+			
+		for (j=0; j < (32/2); j = j+1) 
+		begin	
+			case(cc[j])
+				3'b001 : pp[j] = {a[32-1], a}; 
+				3'b010 : pp[j] = {a[32-1], a};
+				3'b011 : pp[j] = {a, 1'b0};
+				3'b100 : pp[j] = {inv_a[32-1:0], 1'b0};
+				3'b101 : pp[j] = inv_a; 
+				3'b110 : pp[j] = inv_a;
+				default : pp[j] = 0;
+			endcase
+			spp[j] = $signed(pp[j]);
+			
+			for (i=0 ; i<j ; i = i + 1)
+				spp[j] = {spp[j], 2'b00};
+		end
+	
+		product = spp[0];
+	
+		for (j=1; j < (32/2); j = j+1)
+			product = product + spp[j];
+	end
+	assign Z = product;	
 endmodule

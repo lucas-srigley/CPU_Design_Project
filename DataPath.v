@@ -1,5 +1,5 @@
  module DataPath(
-	input PCout, Zhighout, Zlowout, MDRout, R2out, R3out, 
+	input PCout, Zhighout, Zlowout, MDRout, R2out, R3out, R4out, R5out, R6out, R7out,
 	input MARin, PCin, MDRin, IRin, Yin, 
 	input IncPC, Read, 
 	input wire [4:0] opcode,
@@ -17,7 +17,7 @@ wire [31:0] BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxIn
 	BusMuxInHI, BusMuxInLO, BusMuxInY, BusMuxInZhigh, BusMuxInZlow, BusMuxInPC, BusMuxInMDR, BusMuxIn_InPort, BusMuxInCsignextended,
 	BusMuxOut;
 
-//register r0 (clear, clock, R0in, BusMuxOut, BusMuxInR0);
+register r0 (clear, clock, R0in, BusMuxOut, BusMuxInR0);
 register r1 (clear, clock, R1in, BusMuxOut, BusMuxInR1);
 register r2 (clear, clock, R2in, BusMuxOut, BusMuxInR2);
 register r3 (clear, clock, R3in, BusMuxOut, BusMuxInR3);
@@ -41,23 +41,15 @@ register Zlow (clear, clock, ZLowIn, BusMuxInZ[31:0], BusMuxInZlow);
 ProgramCounter PC(clock, PCin, IncPC, BusMuxOut, BusMuxInPC);
 MDR mdr(clear, clock, MDRin, Read, BusMuxOut, Mdatain, BusMuxInMDR);
 
-//Bus
 Bus bus(BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxInR5, BusMuxInR6, BusMuxInR7, BusMuxInR8, 
 	BusMuxInR9, BusMuxInR10, BusMuxInR11, BusMuxInR12, BusMuxInR13, BusMuxInR14, BusMuxInR15, 
 	BusMuxInHI, BusMuxInLO, BusMuxInY, BusMuxInZhigh, BusMuxInZlow, BusMuxInPC, BusMuxInMDR, BusMuxIn_InPort, BusMuxInCsignextended,
-	PCout, Zhighout, Zlowout, MDRout, R2out, R3out,
+	PCout, Zhighout, Zlowout, MDRout, R2out, R3out, R4out, R5out, R6out, R7out,
 	BusMuxOut);
 		
-ALU alu(
-			.clear(clear),
-			.clock(clock),
-			.IncPC(IncPC),
-			.A(BusMuxOut),
-			.B(BusMuxOut),
-			.Y(BusMuxInY),
-			.opcode(opcode),
-			.Z(BusMuxInZ)
-);
+ALU r1r2r3(clear, clock, opcode, BusMuxInR2, BusMuxInR3, BusMuxInZ);
+ALU r4r5(clear, clock, opcode, BusMuxInR4, BusMuxInR5, BusMuxInZ);
+ALU r6r7(clear, clock, opcode, BusMuxInR6, BusMuxInR7, BusMuxInZ);
 
 	 
 endmodule
