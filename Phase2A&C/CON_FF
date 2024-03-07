@@ -1,6 +1,6 @@
 module CON_FF #(parameter init_val = 32'b00000000000000000000000000000000)(
-    output reg connOut,
-    input wire connIn,
+    output reg conOut,
+    input wire conIn,
     input wire [31:0] busIn,
     input wire [1:0] intr,
 );
@@ -8,7 +8,7 @@ module CON_FF #(parameter init_val = 32'b00000000000000000000000000000000)(
 initial
 
 begin
-    connOut = init_val;
+    conOut = init_val;
 end
 
 // registers for: greater than or equal to zero, less than zero, nor (not OR) zero, equal to zero,
@@ -20,7 +20,7 @@ always @(*)
 
 begin
 
-	 if (connIn == 1)
+	 if (conIn == 1)
 
 	 begin
 		 case(inst)
@@ -40,8 +40,8 @@ begin
 		 greZero <= decoderOut[2] & ~(busIn[31]);
 		 lZero <= decoderOut[3] & busIn[31];
 
-    // set connOut to the OR of all 4 different cases
-		 connOut = (neqZero | eqZero | lZero | greZero);
+    // set conOut to the OR of all 4 different cases
+		 conOut = (neqZero | eqZero | lZero | greZero);
 	 end
 end
 endmodule
