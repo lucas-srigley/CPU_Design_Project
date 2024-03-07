@@ -104,7 +104,7 @@ module SelectEncodeLogic(input [31:0] instr, input wire Gra, Grb, Grc, Rin, Rout
 	 
     begin
 	 
-        case(decoder_output) 
+	    case(decoderOut) 
 		  
 		  // assign for registers from R0out - R15out
         16'b0000000000000001: RegOut <= 16'b0000000000000001 & (BAout_or_Rout? 16'b1111111111111111: 16'b0000000000000000);
@@ -131,11 +131,11 @@ module SelectEncodeLogic(input [31:0] instr, input wire Gra, Grb, Grc, Rin, Rout
 		  
     end
 
-    always@(IR)
+	always@(instr)
 	 
     begin
 
-        C_sign_extended_out = $signed(IR[18:0]);
+	    C_sign_extended = $signed(instr[18:0]);
 
     end
 	 
