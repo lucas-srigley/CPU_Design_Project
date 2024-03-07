@@ -1,4 +1,4 @@
-module CON_FF #(parameter init_val = 32'b00000000000000000000000000000000)(
+module conFF #(parameter init_val = 32'b00000000000000000000000000000000)(
     output reg conOut,
     input wire conIn,
     input wire [31:0] busIn,
