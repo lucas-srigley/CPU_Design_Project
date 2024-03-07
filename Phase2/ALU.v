@@ -1,96 +1,126 @@
 module ALU(
-	input clear,
-	input clock,
-	input wire [4:0] opcode,
-	input wire [31:0] A,
-	input wire [31:0] B,
-	output reg [31:0] Zlow,
-	output reg [31:0] Zhigh
+	output reg [63:0] Rc,
+	input wire [31:0] Ra,
+	input wire [31:0] Rb,
+	input wire [4:0] opcode
 );
-
-	parameter Logical_AND = 5'b01010, Logical_OR = 5'b01011, Addition = 5'b00011, Subtraction = 5'b00100, Multiply = 5'b01111, Division = 5'b10000,
-	Shift_R = 5'b00101, Shift_Right_A = 5'b00110, Shift_L = 5'b00111, Rotate_R = 5'b01000, Rotate_L = 5'b01001, Negate = 5'b10001, Not = 5'b10010,
-	Load = 5'b00000;
-
-	wire [31:0] and_result, or_result, add_result, sub_result, shr_result, shra_result, shl_result, ror_result, rol_result, neg_result, not_result;
-	wire [63:0] mul_result, div_result;
+	parameter 
+	Addition = 5'b00011, 
+	Subtraction = 5'b00100, 
+	Multiplication = 5'b01111, 
+	Division = 5'b10000, 
+	Shift_right = 5'b00111, 
+	Shift_left = 5'b01001, 
+	Rotate_right = 5'b01010, 
+	Rotate_left = 5'b01011, 
+	And = 5'b00101, 
+	Or = 5'b00110, 
+	Negate = 5'b10001, 
+	Not = 5'b10010,  
+	load = 5'b00000,
+    loadi = 5'b00001,
+	br = 5'b10011,
+    store = 5'b00010,
+	addi = 5'b01100,
+	andi = 5'b01101,
+	ori = 5'b01110,
+	Shift_right_arithmetic = 5'b01000;
 	
-	logical_AND logical_and(A, B, and_result);
-	logical_OR 	logical_or(A, B, or_result);
-	adder 		add(A, B, add_result);
-	subtractor 	sub(A, B, sub_result);
-	booth 		mul(A, B, mul_result[31:0], mul_result[63:32]);
-	division		div(A, B, div_result[31:0], div_result[63:32]);
-	ShiftRight 	shr(A, B, shr_result);
-	ShiftRightA shra(A, B, shra_result);
-	ShiftLeft 	shl(A, B, shl_result);
-	RotateRight ror(A, B, ror_result);
-	RotateLeft 	rol(A, B, rol_result);
-	negate 		neg(B, neg_result);
-	logical_NOT logical_not(B, not_result);
+    //Operation Outputs
+	wire [31:0] IncPC_out, shr_out, shl_out, shra_out, or_out, and_out, neg_out, not_out, add_sum, add_cout, sub_sum, sub_cout, 
+				rol_out, ror_out, mul_out_hi, mul_out_lo;
+	wire [63:0] div_out, mul_out;
 
-	always @(*) 
-		begin
-			case (opcode)
-
-				Logical_AND: begin // 3.1
-					Zlow[31:0] <= and_result[31:0];
-				end
-				
-				Logical_OR: begin // 3.2
-					Zlow[31:0] <= or_result[31:0];
-				end
-				
-				Addition: begin // 3.3
-					Zlow[31:0] <= add_result[31:0];
-				end
-				
-				Subtraction: begin // 3.4
-					Zlow[31:0] <= sub_result[31:0];
-				end
-				
-				Multiply: begin // 3.5
-					Zlow[31:0] <= mul_result[31:0];
-					Zhigh[31:0] <= mul_result[63:32];
-				end
-				
-				Division: begin // 3.6
-					Zlow[31:0] <= div_result[31:0];
-					Zhigh[31:0] <= div_result[63:32];
-				end
-				
-				Shift_R: begin // 3.7
-					Zlow[31:0] <= shr_result[31:0];
-				end
-				
-				Shift_Right_A: begin // 3.8
-					Zlow[31:0] <= shra_result[31:0];
-				end
-				
-				Shift_L: begin // 3.9
-					Zlow[31:0] <= shl_result[31:0];
-				end
-
-				Rotate_R: begin // 3.10
-					Zlow[31:0] <= ror_result[31:0];
-				end
+	//Possible ALU Operations
+	or_32_bit or_op(or_out, Ra, Rb);
+	and_32_bit and_op(and_out, Ra, Rb);
+	negate_32_bit negate_op(neg_out, Rb);
+	not_32_bit not_op(not_out, Rb);
+	add_32_bit add_op(add_cout, add_sum, Ra, Rb, 32'h00000000);
+	sub_32_bit sub_op(sub_cout, sub_sum, Ra, Rb);
+	ror_32_bit ror_op(ror_out, Ra, Rb);
+	rol_32_bit rol_op(rol_out, Ra, Rb);
+	shl_32_bit shl_op(shl_out, Ra, Rb);
+	shr_32_bit shr_op(shr_out, Ra, Rb);
+	shra_32_bit shra_op(shra_out, Ra, Rb);
+	div_32_bit div_op(div_out, Ra, Rb);
+	mul mul_op(mul_out_hi, mul_out_lo, Ra, Rb);
 	
-				Rotate_L: begin // 3.11
-					Zlow[31:0] <= rol_result[31:0];
+	always @(*) // do the required job in each state
+		begin	
+			case (opcode) // assert the required signals in each clock cycle
+				
+				Addition, addi: begin
+					Rc[31:0] = add_sum[31:0];
+					Rc[63:32] = 32'd0;
 				end
 				
-				Negate: begin // 3.12
-					Zlow[31:0] <= neg_result[31:0];
+				Subtraction: begin
+					Rc[31:0] = sub_sum[31:0];	
+					Rc[63:32] = 32'd0;
+				end
+				
+				Or, ori: begin
+					Rc[31:0] = or_out[31:0];
+					Rc[63:32] = 32'd0;
+				end
+				
+				And, andi: begin
+					Rc[31:0] = and_out[31:0];
+					Rc[63:32] = 32'd0;
+				end
+				
+				Negate: begin
+					Rc[31:0] = neg_out[31:0];
+					Rc[63:32] = 32'd0;
+				end
+				
+				Not: begin
+					Rc[31:0] = not_out[31:0];
+					Rc[63:32] = 32'd0;
+				end
+				
+				Shift_right: begin
+					Rc[31:0] = shr_out[31:0];
+					Rc[63:32] = 32'd0;
+				end
+				
+				Shift_left: begin
+					Rc[31:0] = shl_out[31:0];
+					Rc[63:32] = 32'd0;
+				end
+                
+				Shift_right_arithmetic: begin
+                    Rc[31:0] = shra_out[31:0];
+					Rc[63:32] = 32'd0;
+                end
+
+				Rotate_right: begin
+					Rc[31:0] = ror_out[31:0];
+					Rc[63:32] = 32'd0;
+				end
+				
+				Rotate_left: begin
+					Rc[31:0] = rol_out[31:0];
+					Rc[63:32] = 32'd0;
+				end
+				
+				Multiplication: begin
+					Rc[63:32] = mul_out_hi;
+					Rc[31:0] = mul_out_lo;
+				end
+				
+				Division: begin
+					Rc[63:0] = div_out[63:0];
 				end
 
-				Not: begin // 3.13
-					Zlow[31:0] <= not_result[31:0];
+				loadi,load,store, br: begin
+					Rc[31:0] = add_sum[31:0];
+					Rc[63:32] = 32'd0;
 				end
-				
-				Load: begin // 3.1
-					Zlow[31:0] <= add_result[31:0];
-				end
-				
+
+				default: Rc[63:0] = 0;
+
 			endcase
 	end
 

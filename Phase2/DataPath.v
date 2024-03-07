@@ -1,12 +1,12 @@
 module DataPath(
-	output [31:0] Mdatain, MDR_data_out,
-	input PC_out, ZHigh_out, ZLow_out, HI_out, LO_out, C_out,
-	input MDR_out,MDR_enable, MAR_enable, Z_enable, Y_enable, PC_enable, LO_enable, 
-	HI_enable, clr, clk, InPort, IncPC, Read,
-	input [4:0] opcode,
-	// Phase 2 Inputs/Outputs
-	input con_in, out_port_enable, RAM_write_enable, IR_enable,  
-	input Gra, Grb, Grc, R_in, R_out, BA_out, in_port_out, in_port_enable
+output [31:0] Mdatain, MDR_data_out,
+input PC_out, ZHigh_out, ZLow_out, HI_out, LO_out, C_out,
+input MDR_out,MDR_enable, MAR_enable, Z_enable, Y_enable, PC_enable, LO_enable, 
+HI_enable, clr, clk, InPort, IncPC, Read,
+input [4:0] opcode,
+// Phase 2 Inputs/Outputs
+input con_in, out_port_enable, RAM_write_enable, IR_enable,  
+input Gra, Grb, Grc, R_in, R_out, BA_out, in_port_out, in_port_enable
 );
     // General Purpose Registers
     wire [31:0] R0_data_out;
@@ -86,17 +86,16 @@ module DataPath(
     reg_32_bit in_port(in_port_data_out, in_port_in, clk, clr, in_port_enable);
     reg_32_bit out_port(out_port_data_out, MuxOut, clk, clr, out_port_enable);  
     //ld Case 1:
-    defparam PC.INIT_VAL = 32'b000; //ld instruction
-    defparam R1.INIT_VAL = 32'b000; //ld R2, 0x95
+    defparam PC.INIT_VAL = 32'b000; //ld instruction case 1
     
     //ld Case 2: 
-    // defparam R1.INIT_VAL = 32'b001; // for ld case 2
-    // defparam PC.INIT_VAL = 32'b001; //ld instruction case 2
+    //defparam R2.INIT_VAL = 32'b001; // for ld case 2
+    defparam PC.INIT_VAL = 32'b001; //ld instruction case 2
     //ldi Case 3:
     //defparam PC.INIT_VAL = 32'b010; //ldi R1, $75 
     //ldi Case 4:
     //defparam PC.INIT_VAL = 32'b011; //ldi R1, $45(R1) 
-    //defparam R1.INIT_VAL = 32'h00000001; //R1 holds value of 1 for $45(R1) = $45+$1 = $46 = 70 decimal => 100 0110
+    // defparam R1.INIT_VAL = 32'h00000001; //R1 holds value of 1 for $45(R1) = $45+$1 = $46 = 70 decimal => 100 0110
 
     //st Case 1: st $90, R4
     // defparam PC.INIT_VAL = 32'b100; 
@@ -225,6 +224,6 @@ module DataPath(
                        C_sign_extended_data_out,
                        enc_out
                        );
-    alu alu_instance(C_data_out, Y_data_out, MuxOut, opcode);
+    ALU alu_instance(C_data_out, Y_data_out, MuxOut, opcode);
               
 endmodule
