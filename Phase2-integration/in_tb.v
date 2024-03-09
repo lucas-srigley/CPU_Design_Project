@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
-module ld_tb;
-	reg PC_out, ZLow_out, ZHigh_out, HI_out, LO_out, C_out, in_port_out; 
+module in_tb;
+    reg PC_out, ZLow_out, ZHigh_out, HI_out, LO_out, C_out, in_port_out; 
     wire [31:0] MDR_data_out;
     reg MDR_out;
     reg MAR_enable, Z_enable, PC_enable, MDR_enable, IR_enable, Y_enable, LO_enable, HI_enable, InPort;
@@ -17,7 +17,7 @@ module ld_tb;
     T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010, T4 = 4'b1011, T5 = 4'b1100, T6= 4'b1101, T7= 4'b1110;
     reg [3:0] Present_state = Default;
 
-		DataPath DUT(
+	DataPath DUT(
 			 Mdatain, MDR_data_out,
 			 PC_out, ZHigh_out, ZLow_out, HI_out, LO_out, C_out,
 			 MDR_out, MDR_enable, MAR_enable, Z_enable, Y_enable, PC_enable, LO_enable, 
@@ -25,8 +25,7 @@ module ld_tb;
 			 opcode,
 			 con_in, out_port_enable, RAM_write_enable, IR_enable,
 			 Gra, Grb, Grc, R_in, R_out, BA_out, in_port_out, in_port_enable
-		);
-
+	);
 
     initial begin
         Clock = 0;
@@ -36,13 +35,9 @@ module ld_tb;
     always @(posedge Clock) begin
         case (Present_state)
             Default : Present_state = T0;
-            T0 : #40  Present_state = T1;
-            T1 : #40  Present_state = T2;
-            T2 : #40  Present_state = T3;
-            T3 : #40  Present_state = T4;
-            T4 : #40  Present_state = T5;
-            T5 : #40  Present_state = T6;
-            T6 : #40  Present_state = T7;
+            T0 : Present_state = T1;
+            T1 : #40 Present_state = T2;
+            T2 : #40 Present_state = T3;
         endcase
     end
 
@@ -51,7 +46,7 @@ module ld_tb;
             Default: begin
                 PC_out <= 0; ZLow_out <= 0; clr <= 0;
                 MAR_enable <= 0; Z_enable <= 0;
-                PC_enable <= 0; MDR_enable <= 0; IR_enable = 0; Y_enable = 0;
+                PC_enable <= 0; MDR_enable <= 0; IR_enable= 0; Y_enable= 0;
                 IncPC <= 0; Read <= 0; opcode <= 0;
                 ZHigh_out <= 0; HI_out <= 0; LO_out <= 0; C_out <= 0; in_port_out <= 0;
                 MDR_out <= 0;
@@ -59,46 +54,26 @@ module ld_tb;
                 Gra <= 0; Grb <= 0; Grc <= 0; BA_out <= 0; RAM_write_enable <= 0; out_port_enable <= 0; 
                 in_port_in <= 0; con_in <= 0; R_out <= 0; R_in <= 0; in_port_enable <= 0;
             end
-
             T0: begin
-                PC_out <= 1; MAR_enable <= 1; PC_enable <= 1;
+                in_port_enable <= 1;
+                PC_out <= 1; MAR_enable <= 1; 
             end
-
             T1: begin
-                PC_out <= 0; MAR_enable <= 0; PC_enable <= 0;
+                in_port_enable <= 0;
+                MAR_enable <= 0; PC_out <= 0;
+                IncPC <= 0; PC_enable <= 0;
+
                 Read <= 1;
                 MDR_enable <= 1; 
             end
-
             T2: begin
-                MDR_enable <= 0;
-                MDR_out <= 1; IR_enable <= 1; 
+                MDR_enable <= 0; MDR_out <= 1;
+                IR_enable <= 1;
             end
-
             T3: begin
                 MDR_out <= 0; IR_enable <= 0;
-                Grb <= 1; BA_out <= 1; Y_enable <= 1;
-            end
-
-            T4: begin
-                Grb <= 0; BA_out <= 0; Y_enable <= 0;
-                C_out <= 1; Z_enable <= 1; opcode <= 5'b00000;
-            end
-
-            T5: begin
-                C_out <= 0; Z_enable <= 0;
-                ZLow_out <= 1; MAR_enable <= 1;
-            end
-
-            T6: begin
-                ZLow_out <= 0; MAR_enable <= 0;
-                Read <= 1; MDR_enable <= 1;  
-            end
-
-            T7: begin
-                MDR_enable <= 0;
-                MDR_out <= 1; Gra <= 1; R_in <= 1;
-            end
+                Gra <= 1; in_port_out <= 1; R_in <= 1; 
+            end 
         endcase
     end
 endmodule

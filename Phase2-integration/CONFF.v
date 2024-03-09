@@ -12,7 +12,7 @@ module CONFF #(parameter conInitial = 0)(
 
 	// registers for: greater than or equal to zero, less than zero, nor (not OR) zero, equal to zero,
 	// and not equal zero, defined respectively
-	reg greZero, lZero, norOut, eqZero, neqZero;
+	reg greZero, lessZero, norOut, eqZero, neqZero;
 	reg [3:0] decoderOut;
 
 	always @(*) 
@@ -32,10 +32,10 @@ module CONFF #(parameter conInitial = 0)(
 			eqZero <= decoderOut[0] & norOut;
 			neqZero <= decoderOut[1] & ~(norOut);
 			greZero <= decoderOut[2] & ~(busIn[31]);
-			lZero <= decoderOut[3] & busIn[31];
+			lessZero <= decoderOut[3] & busIn[31];
 
 			// set conOut to the OR of all 4 different cases
-			conOut = (neqZero | eqZero | lZero | greZero);
+			conOut = (neqZero | eqZero | lessZero | greZero);
 		end
 	end
 endmodule

@@ -1,10 +1,10 @@
 module DataPath(
 	output [31:0] Mdatain, BusMuxInMDR,
 	input PCout, Zhighout, Zlowout, HIout, LOout, Cout,
-	input MDR_out, enableMDR, enableMAR, enableZ, enableY, enablePC, enableLO, 
+	input MDRout, enableMDR, enableMAR, enableZ, enableY, enablePC, enableLO, 
 	enableHI, clear, clock, InPort, IncPC, Read,
 	input [4:0] opcode,
-	input conIn, enableOutPort, RAM_write_enable, enableIR,  
+	input conIn, enableOutPort, enableRAM, enableIR,  
 	input Gra, Grb, Grc, Rin, Rout, BAout, InPort_Out, enableInPort
 );
 
@@ -60,21 +60,23 @@ module DataPath(
 	register inPort(clear, clock, enableInPort, inPortIn, BusMuxIn_InPort);
 	register outPort(clear, clock, enableOutPort, BusMuxOut, outPortOut);
 	
-	//ld Case 1:
-	defparam PC.qInitial = 32'b000; //ld R2, 0x95
+	// Test Cases
 	
-	//ld Case 2:  
-	//defparam PC.qInitial = 32'b001; //ld R0, 0x38(R2) 
+	//ld Case 1: ld R2, 0x95
+	defparam PC.qInitial = 32'b0;
+	
+	//ld Case 2: ld R0, 0x38(R2) 
+	//defparam PC.qInitial = 32'b1; 
 	//defparam R2.qInitial = 32'h95; 
 	
-	//ldi Case 3:
-	//defparam PC.qInitial = 32'b010; //ldi R2, 0x95 
+	//ldi Case 3: ldi R2, 0x95 
+	//defparam PC.qInitial = 32'b10; 
 	
-	//ldi Case 4:
-	//defparam PC.qInitial = 32'b011; //ldi R0, 0x38(R2) 
+	//ldi Case 4: ldi R0, 0x38(R2) 
+	//defparam PC.qInitial = 32'b11; 
 	//defparam R2.qInitial = 32'h95; 
 
-	//st Case 1: st 0x87, R1/// MUST CHANGE EVERYTHING BELOW
+	//st Case 1: st 0x87, R1
 	//defparam PC.qInitial = 32'b100; 
 	//defparam R1.qInitial = 32'h43;
 
@@ -82,55 +84,63 @@ module DataPath(
 	//defparam PC.qInitial = 32'b101;  
 	//defparam R1.qInitial = 32'h43;
 
-	/// MUST CHANGE EVERYTHING BELOW
+	// ALU Case 1: addi R3, R4, -5
+	//defparam PC.qInitial = 32'b110;
 	
-	//Case 1: brzr R6, 25
-	// defparam PC.qInitial = 32'b1000; 
-	// defparam R6.qInitial = 32'h0;
-	//defparam PC.qInitial = 32'b1000; 
-	//defparam R6.qInitial = 32'h0;
+	// ALU Case 2: ori R3, R4, 0x53
+	//defparam PC.qInitial = 32'b111;
+	//defparam R4.qInitial = 32'b100010100100010110;
+	
+	// ALU Case 3: andi R3, R4, 0x53
+	//defparam PC.qInitial = 32'b1000;
+	//defparam R4.qInitial = 32'b100010100100010110;
+	
+	// br Case 1: brzr R5, 14
+	//defparam PC.qInitial = 32'b1001; 
+	//defparam R5.qInitial = 32'h0;
 
-	//Case 2: brnz R6, 25
-	// defparam PC.qInitial = 32'b1001; 
-	// defparam R6.qInitial = 32'h1;
-	// //Case 3: brpl R6, 25
-	// defparam PC.qInitial = 32'b1010; 
-	// defparam R6.qInitial = 32'h1;
-	// //Case 4: brmi R6, 25
-	// defparam PC.qInitial = 32'b1011; 
-	// defparam R6.qInitial = 32'h80000000;
-	//jr R2
-	// defparam PC.qInitial = 32'b1100; 
-	// defparam R2.qInitial = 32'hF;
-	//jal
-	// defparam PC.qInitial = 32'b1101; 
-	// defparam R2.qInitial = 32'hF;
-	//addi R2, R3, -3
-	// defparam PC.qInitial = 32'b110;
-	//andi R2, R3, 0x25
-	// defparam PC.qInitial = 32'b10011;
-	// defparam R3.qInitial = 32'b1;
-	//ori R2, R3, 0x25
-	// defparam PC.qInitial = 32'b00111;
-	// defparam R3.qInitial = 32'b1;
-	// in
-	// defparam PC.qInitial = 32'b10000;
-	//out
-	// defparam PC.qInitial = 32'b10000;
-	//mfhi
-	// defparam PC.qInitial = 32'b01110;
-	// defparam HI.qInitial = 32'hFFFFFFFF;
-	//mflo 
-	// defparam PC.qInitial = 32'b01111;
-	// defparam LO.qInitial = 32'hFFFFFFFF;
-
-	ram RAM(Mdatain, BusMuxInMDR, MARout[8:0], clock, RAM_write_enable, Read);
+	// br Case 2: brnz R5, 14
+	//defparam PC.qInitial = 32'b1010; 
+	//defparam R5.qInitial = 32'h1;
+	
+	// br Case 3: brpl R5, 14
+	//defparam PC.qInitial = 32'b1011; 
+	//defparam R5.qInitial = 32'h1;
+	
+	// br Case 4: brmi R5, 14
+	//defparam PC.qInitial = 32'b1100; 
+	//defparam R5.qInitial = 32'h80000000;
+	
+	//	Jump Case 1: jr R6
+	//defparam PC.qInitial = 32'b1101; 
+	//defparam R6.qInitial = 32'h1;
+	
+	//	Jump Case 2: jal R6
+	//defparam PC.qInitial = 32'b1110; 
+	//defparam R6.qInitial = 32'h1;
+	
+	// Special Case 1: mfhi R6
+	//defparam PC.qInitial = 32'b1111;
+	//defparam HI.qInitial = 32'hFFFFFFFF;
+	
+	// Special Case 2: mflo R7
+	//defparam PC.qInitial = 32'b10000;
+	//defparam LO.qInitial = 32'hFFFFFFFF;
+	
+	// Output Case 1 : out R3
+	//defparam PC.qInitial = 32'b10001;
+	//defparam R3.qInitial = 32'hFFFFFFFF;
+	
+	// Input Case 2: in R4
+	//defparam PC.qInitial = 32'b10010;
+	
+	ram RAM(Mdatain, BusMuxInMDR, MARout[8:0], clock, enableRAM, Read);
 
 	SelectEncodeLogic SEL(IRout, Gra, Grb, Grc, Rin, Rout, BAout, C_sign_extended, Rins, Routs);
 
 	MDR mdr(clear, clock, enableMDR, Read, BusMuxOut, Mdatain, BusMuxInMDR);
 
-	Encoder_32to5 encoder(encoderOut, {{8'b0}, Cout, InPort_Out, MDR_out, PCout, Zlowout, Zhighout, LOout, HIout, 
+	Encoder_32to5 encoder(encoderOut, {{8'b0}, Cout, InPort_Out, MDRout, PCout, Zlowout, Zhighout, LOout, HIout, 
 	Routs[15], Routs[14], Routs[13], Routs[12], Routs[11], Routs[10], Routs[9], Routs[8], Routs[7], Routs[6], Routs[5], Routs[4], 
 	Routs[3], Routs[2], Routs[1], Routs[0]});
 
