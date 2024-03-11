@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
 module ld_tb;
-	reg PC_out, ZLow_out, ZHigh_out, HI_out, LO_out, C_out, in_port_out; 
+    reg PC_out, ZLow_out, ZHigh_out, HI_out, LO_out, C_out, in_port_out; 
     wire [31:0] MDR_data_out;
     reg MDR_out;
     reg MAR_enable, Z_enable, PC_enable, MDR_enable, IR_enable, Y_enable, LO_enable, HI_enable, InPort;
@@ -27,31 +27,33 @@ module ld_tb;
 			 Gra, Grb, Grc, R_in, R_out, BA_out, in_port_out, in_port_enable
 		);
 
-
-    initial begin
+    initial
+    begin
         Clock = 0;
         forever #10 Clock = ~Clock;
     end
 
-    always @(posedge Clock) begin
+    always @(posedge Clock)
+    begin
         case (Present_state)
             Default : Present_state = T0;
-            T0 : #40  Present_state = T1;
-            T1 : #40  Present_state = T2;
-            T2 : #40  Present_state = T3;
-            T3 : #40  Present_state = T4;
-            T4 : #40  Present_state = T5;
-            T5 : #40  Present_state = T6;
-            T6 : #40  Present_state = T7;
+            T0 : #40 Present_state = T1;
+            T1 : #40 Present_state = T2;
+            T2 : #40 Present_state = T3;
+            T3 : #40 Present_state = T4;
+            T4 : #40 Present_state = T5;
+            T5 : #40 Present_state = T6;
+            T6 : #40 Present_state = T7;
         endcase
     end
 
-    always @(Present_state) begin
+    always @(Present_state)
+    begin
         case (Present_state)
             Default: begin
                 PC_out <= 0; ZLow_out <= 0; clr <= 0;
                 MAR_enable <= 0; Z_enable <= 0;
-                PC_enable <= 0; MDR_enable <= 0; IR_enable = 0; Y_enable = 0;
+                PC_enable <= 0; MDR_enable <= 0; IR_enable <= 0; Y_enable <= 0;
                 IncPC <= 0; Read <= 0; opcode <= 0;
                 ZHigh_out <= 0; HI_out <= 0; LO_out <= 0; C_out <= 0; in_port_out <= 0;
                 MDR_out <= 0;
@@ -61,43 +63,42 @@ module ld_tb;
             end
 
             T0: begin
-                PC_out <= 1; MAR_enable <= 1; PC_enable <= 1;
+                PC_out <= 1; MAR_enable <= 1;
             end
 
             T1: begin
-                PC_out <= 0; MAR_enable <= 0; PC_enable <= 0;
-                Read <= 1;
-                MDR_enable <= 1; 
+                PC_out <= 0; MAR_enable <= 0; 
+                Read <= 1; MDR_enable <= 1; 
             end
 
             T2: begin
-                MDR_enable <= 0;
+                MDR_enable <= 0; 
                 MDR_out <= 1; IR_enable <= 1; 
             end
 
             T3: begin
                 MDR_out <= 0; IR_enable <= 0;
-                Grb <= 1; BA_out <= 1; Y_enable <= 1;
+                Grb <= 1; BA_out <= 1; Y_enable <= 1; 
             end
 
             T4: begin
                 Grb <= 0; BA_out <= 0; Y_enable <= 0;
-                C_out <= 1; Z_enable <= 1; opcode <= 5'b00000;
+                C_out <= 1; Z_enable <= 1; opcode <= 5'b00011; 
             end
 
             T5: begin
-                C_out <= 0; Z_enable <= 0;
-                ZLow_out <= 1; MAR_enable <= 1;
+                C_out <= 0; Z_enable <= 0; 
+                ZLow_out <= 1; MAR_enable <= 1; 
             end
 
             T6: begin
-                ZLow_out <= 0; MAR_enable <= 0;
+                ZLow_out <= 0; MAR_enable <= 0; 
                 Read <= 1; MDR_enable <= 1;  
             end
 
             T7: begin
-                MDR_enable <= 0;
-                MDR_out <= 1; Gra <= 1; R_in <= 1;
+                Read <= 0; MDR_enable <= 0;   
+                MDR_out <= 1; ZLow_out <= 1; Gra = 1; R_in = 1; RAM_write_enable <= 1;                    
             end
         endcase
     end
