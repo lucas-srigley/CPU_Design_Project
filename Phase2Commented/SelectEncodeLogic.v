@@ -6,13 +6,13 @@ module SelectEncodeLogic(
 );
 	// register for the input of the decoder; set all 4 bits to 0 in binary
 	reg [3:0] decoderIn = 4'b0000;
-	// register for the output of the 16 bit decoder
+	// register for the output of the 16-bit decoder
 	reg [15:0] decoderOut;
 
 	initial
 			
 	begin
-		// register in and out, seting all 16 bits to 0
+		// register in and out, setting all 16 bits to 0
 		RegOut = 16'b0;
 		RegIn = 16'b0;	 
 	end
@@ -119,6 +119,8 @@ module SelectEncodeLogic(
 		  16'b0010000000000000: RegOut <= 16'b0010000000000000 & (BAout_or_Rout? 16'b1111111111111111: 16'b0000000000000000);  
 		  16'b0100000000000000: RegOut <= 16'b0100000000000000 & (BAout_or_Rout? 16'b1111111111111111: 16'b0000000000000000);  
 		  16'b1000000000000000: RegOut <= 16'b1000000000000000 & (BAout_or_Rout? 16'b1111111111111111: 16'b0000000000000000);  
+
+		  // assigned 0 to decoderOut as a default
 		  default: RegOut <= 16'b0000000000000000;
 			  
 		endcase   
