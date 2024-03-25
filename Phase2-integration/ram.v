@@ -39,7 +39,7 @@ module ram #(parameter RAMinitial = 0)(
 
 		
 		//Address ORG 0
-		mem[0] = 32'h09000069; // ldi R2, 0x69
+		mem[0] = 32'h09000069; // ldi R2, 0x69 
 		mem[1] = 32'h09010002; // ldi R2, 2(R2)
 		mem[2] = 32'h00800047; // ld R1, 0x47
 		mem[3] = 32'h08880001; // ldi R1, 1(R1)

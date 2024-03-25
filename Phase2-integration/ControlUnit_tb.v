@@ -5,7 +5,7 @@ reg clock, clear, stop;
 wire[31:0] in_port_data_in, out_port_data_out, MuxOut;
 wire [4:0] opcode;
 
-Datapath DUT(clock, stop, clear, in_port_data_in, out_port_data_out, MuxOut);
+DataPath DUT(clock, stop, clear, in_port_data_in, out_port_data_out, MuxOut);
 
 
 initial

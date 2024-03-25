@@ -8,12 +8,15 @@ input clock, stop, clear,
 	wire PC_out, ZHigh_out, ZLow_out, HI_out, LO_out, C_out, MDR_out,
 	  MDR_enable, MAR_enable, Z_enable, Y_enable, PC_enable, LO_enable,
 	  con_in, out_port_enable, RAM_write_enable, IR_enable, Gra, Grb, 
-	  Grc, R_in, R_out, BA_out, in_port_out, in_port_enable,
+	  Grc, R_in, R_out, BAout, in_port_out, in_port_enable,
 	  HI_enable, InPort, Read, Run, IncPC;
 
 	wire [31:0] BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxInR5, BusMuxInR6, BusMuxInR7, BusMuxInR8, BusMuxInR9, 
            BusMuxInR10, BusMuxInR11, BusMuxInR12, BusMuxInR13, BusMuxInR14, BusMuxInR15, 
            BusMuxInHI, BusMuxInLO, BusMuxInZHigh, BusMuxInZLow, BusMuxInPC, BusMuxIn_InPort, C_sign_extended;
+			  
+	wire enableMDR, enableHI, enableLO, enableY, enableIR, enableMAR, enableZ, conIn, enablePC, enableInPort, enableOutPort,
+	enableRAM, Rin, Rout, Cout, InPort_Out, MDRout, PCout, Zlowout, Zhighout, LOout, HIout, IR_data_out;
 			  
 	wire [31:0] Yout, IRout, MARout;
 
@@ -85,12 +88,12 @@ input clock, stop, clear,
    ALU alu(clear, clock, opcode, Yout, BusMuxOut, Zout[31:0], Zout[63:32]);
 	
 	ControlUnit CU(PC_out,ZHigh_out,MDR_out,MAR_enable,PC_enable,MDR_enable,IR_enable,Y_enable,IncPC,Read,
-	HI_enable,LO_enable,HI_out,LO_out,Z_enable,C_out,RAM_write_enable,Gra,Grb,Grc,R_in,R_out,BA_out,
+	HI_enable,LO_enable,HI_out,LO_out,Z_enable,C_out,RAM_write_enable,Gra,Grb,Grc,R_in,R_out,BAout,
 	con_in,in_port_enable,out_port_enable,in_port_out,Run,R_enables,IR_data_out,clock,clear,stop);
 
-	always @(BA_out)
+	always @(BAout)
 	begin
-		 if (BA_out == 1)
+		 if (BAout == 1)
 		 begin
 
 		 end
