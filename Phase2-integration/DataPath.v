@@ -1,17 +1,19 @@
 module DataPath(
-	output [31:0] Mdatain, BusMuxInMDR,
-	input PCout, Zhighout, Zlowout, HIout, LOout, Cout,
-	input MDRout, enableMDR, enableMAR, enableZ, enableY, enablePC, enableLO, 
-	enableHI, clear, clock, InPort, IncPC, Read,
-	input [4:0] opcode,
-	input conIn, enableOutPort, enableRAM, enableIR,  
-	input Gra, Grb, Grc, Rin, Rout, BAout, InPort_Out, enableInPort
+input clock, stop, clear, 
+	input wire [31:0] in_port_data_in,
+	output wire [31:0] out_port_data_out, BusMuxOut
 );
+	
+	wire [31:0] Mdatain, MDR_data_out;
+	wire PC_out, ZHigh_out, ZLow_out, HI_out, LO_out, C_out, MDR_out,
+	  MDR_enable, MAR_enable, Z_enable, Y_enable, PC_enable, LO_enable,
+	  con_in, out_port_enable, RAM_write_enable, IR_enable, Gra, Grb, 
+	  Grc, R_in, R_out, BA_out, in_port_out, in_port_enable,
+	  HI_enable, InPort, Read, Run, IncPC;
 
 	wire [31:0] BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxInR5, BusMuxInR6, BusMuxInR7, BusMuxInR8, BusMuxInR9, 
            BusMuxInR10, BusMuxInR11, BusMuxInR12, BusMuxInR13, BusMuxInR14, BusMuxInR15, 
-           BusMuxInHI, BusMuxInLO, BusMuxInZHigh, BusMuxInZLow, BusMuxInPC, BusMuxIn_InPort, C_sign_extended,
-           BusMuxOut;
+           BusMuxInHI, BusMuxInLO, BusMuxInZHigh, BusMuxInZLow, BusMuxInPC, BusMuxIn_InPort, C_sign_extended;
 			  
 	wire [31:0] Yout, IRout, MARout;
 
@@ -20,6 +22,7 @@ module DataPath(
 
 	wire [15:0] Rins;
 	wire [15:0] Routs;
+	
 	
 	wire [31:0] qValue;
 	assign BusMuxInR0 = {32{!BAout}} & qValue;
@@ -50,89 +53,18 @@ module DataPath(
 
 	wire conOut;
 
-	ProgramCounter PC(clock, IncPC, conOut, enablePC, BusMuxOut, BusMuxInPC);
+	ProgramCounter #(32'h00000000)PC(clock, IncPC, conOut, enablePC, BusMuxOut, BusMuxInPC);
 	
    CONFF conff(conOut, conIn, BusMuxOut, IRout[20:19]);
     
 	wire [31:0] outPortOut;
 	wire [31:0] inPortIn = 32'hFFFFFFFF;
 
-	register inPort(clear, clock, enableInPort, inPortIn, BusMuxIn_InPort);
+	register inPort(clear, clock, enableInPort, in_port_data_in, BusMuxIn_InPort);
 	register outPort(clear, clock, enableOutPort, BusMuxOut, outPortOut);
 	
 	// Test Cases
-	
-	//ld Case 1: ld R2, 0x95
-	defparam PC.qInitial = 32'b0;
-	
-	//ld Case 2: ld R0, 0x38(R2) 
-	//defparam PC.qInitial = 32'b1; 
-	//defparam R2.qInitial = 32'h95; 
-	
-	//ldi Case 3: ldi R2, 0x95 
-	//defparam PC.qInitial = 32'b10; 
-	
-	//ldi Case 4: ldi R0, 0x38(R2) 
-	//defparam PC.qInitial = 32'b11; 
-	//defparam R2.qInitial = 32'h95; 
 
-	//st Case 1: st 0x87, R1
-	//defparam PC.qInitial = 32'b100; 
-	//defparam R1.qInitial = 32'h43;
-
-	//st Case 2: st 0x87(R1), R1
-	//defparam PC.qInitial = 32'b101;  
-	//defparam R1.qInitial = 32'h43;
-
-	// ALU Case 1: addi R3, R4, -5
-	//defparam PC.qInitial = 32'b110;
-	
-	// ALU Case 2: ori R3, R4, 0x53
-	//defparam PC.qInitial = 32'b111;
-	//defparam R4.qInitial = 32'b100010100100010110;
-	
-	// ALU Case 3: andi R3, R4, 0x53
-	//defparam PC.qInitial = 32'b1000;
-	//defparam R4.qInitial = 32'b100010100100010110;
-	
-	// br Case 1: brzr R5, 14
-	//defparam PC.qInitial = 32'b1001; 
-	//defparam R5.qInitial = 32'h0;
-
-	// br Case 2: brnz R5, 14
-	//defparam PC.qInitial = 32'b1010; 
-	//defparam R5.qInitial = 32'h1;
-	
-	// br Case 3: brpl R5, 14
-	//defparam PC.qInitial = 32'b1011; 
-	//defparam R5.qInitial = 32'h1;
-	
-	// br Case 4: brmi R5, 14
-	//defparam PC.qInitial = 32'b1100; 
-	//defparam R5.qInitial = 32'h80000000;
-	
-	//	Jump Case 1: jr R6
-	//defparam PC.qInitial = 32'b1101; 
-	//defparam R6.qInitial = 32'h1;
-	
-	//	Jump Case 2: jal R6
-	//defparam PC.qInitial = 32'b1110; 
-	//defparam R6.qInitial = 32'h1;
-	
-	// Special Case 1: mfhi R6
-	//defparam PC.qInitial = 32'b1111;
-	//defparam HI.qInitial = 32'hFFFFFFFF;
-	
-	// Special Case 2: mflo R7
-	//defparam PC.qInitial = 32'b10000;
-	//defparam LO.qInitial = 32'hFFFFFFFF;
-	
-	// Output Case 1 : out R3
-	//defparam PC.qInitial = 32'b10001;
-	//defparam R3.qInitial = 32'hFFFFFFFF;
-	
-	// Input Case 2: in R4
-	//defparam PC.qInitial = 32'b10010;
 	
 	ram RAM(Mdatain, BusMuxInMDR, MARout[8:0], clock, enableRAM, Read);
 
@@ -151,5 +83,17 @@ module DataPath(
 			  BusMuxOut);
 
    ALU alu(clear, clock, opcode, Yout, BusMuxOut, Zout[31:0], Zout[63:32]);
+	
+	ControlUnit CU(PC_out,ZHigh_out,MDR_out,MAR_enable,PC_enable,MDR_enable,IR_enable,Y_enable,IncPC,Read,
+	HI_enable,LO_enable,HI_out,LO_out,Z_enable,C_out,RAM_write_enable,Gra,Grb,Grc,R_in,R_out,BA_out,
+	con_in,in_port_enable,out_port_enable,in_port_out,Run,R_enables,IR_data_out,clock,clear,stop);
+
+	always @(BA_out)
+	begin
+		 if (BA_out == 1)
+		 begin
+
+		 end
+	end
               
 endmodule
