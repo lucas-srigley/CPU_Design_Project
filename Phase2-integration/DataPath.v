@@ -5,20 +5,16 @@ input clock, stop, clear,
 );
 	
 	wire [31:0] Mdatain, MDR_data_out;
-	wire PC_out, ZHigh_out, ZLow_out, HI_out, LO_out, C_out, MDR_out,
-	  MDR_enable, MAR_enable, Z_enable, Y_enable, PC_enable, LO_enable,
-	  con_in, out_port_enable, RAM_write_enable, IR_enable, Gra, Grb, 
-	  Grc, R_in, R_out, BAout, in_port_out, in_port_enable,
-	  HI_enable, InPort, Read, Run, IncPC;
+	wire Gra, Grb, Grc, BAout, Read, Run, IncPC;
 
 	wire [31:0] BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxInR5, BusMuxInR6, BusMuxInR7, BusMuxInR8, BusMuxInR9, 
-           BusMuxInR10, BusMuxInR11, BusMuxInR12, BusMuxInR13, BusMuxInR14, BusMuxInR15, 
+           BusMuxInR10, BusMuxInR11, BusMuxInR12, BusMuxInR13, BusMuxInR14, BusMuxInR15, BusMuxInMDR,
            BusMuxInHI, BusMuxInLO, BusMuxInZHigh, BusMuxInZLow, BusMuxInPC, BusMuxIn_InPort, C_sign_extended;
 			  
 	wire enableMDR, enableHI, enableLO, enableY, enableIR, enableMAR, enableZ, conIn, enablePC, enableInPort, enableOutPort,
-	enableRAM, Rin, Rout, Cout, InPort_Out, MDRout, PCout, Zlowout, Zhighout, LOout, HIout, IR_data_out;
+	enableRAM, Rin, Rout, Cout, InPort_Out, MDRout, PCout, Zlowout, Zhighout, LOout, HIout;
 			  
-	wire [31:0] Yout, IRout, MARout;
+	wire [31:0] Yout, IR_data_out, MARout;
 
 	wire[4:0] encoderOut;
 	wire [63:0] Zout;
@@ -50,28 +46,27 @@ input clock, stop, clear,
 	register HI(clear, clock, enableHI, BusMuxOut, BusMuxInHI);
 	register LO(clear, clock, enableLO, BusMuxOut, BusMuxInLO);
 	register RY(clear, clock, enableY, BusMuxOut, Yout);
-	register IR(clear, clock, enableIR, BusMuxOut, IRout);
+	register IR(clear, clock, enableIR, BusMuxOut, IR_data_out);
 	register MAR(clear, clock, enableMAR, BusMuxOut, MARout);
 	registerZ Z(clear, clock, enableZ, Zout, BusMuxInZLow, BusMuxInZHigh);
 
 	wire conOut;
 
-	ProgramCounter #(32'h00000000)PC(clock, IncPC, conOut, enablePC, BusMuxOut, BusMuxInPC);
+	ProgramCounter PC(clock, IncPC, conOut, enablePC, BusMuxOut, BusMuxInPC);
 	
-   CONFF conff(conOut, conIn, BusMuxOut, IRout[20:19]);
+	defparam PC.qInitial = 32'b0;
+	
+   CONFF conff(conOut, conIn, BusMuxOut, IR_data_out[20:19]);
     
 	wire [31:0] outPortOut;
-	wire [31:0] inPortIn = 32'hFFFFFFFF;
+	wire [31:0] inPortIn;
 
 	register inPort(clear, clock, enableInPort, in_port_data_in, BusMuxIn_InPort);
-	register outPort(clear, clock, enableOutPort, BusMuxOut, outPortOut);
-	
-	// Test Cases
-
+	register outPort(clear, clock, enableOutPort, BusMuxOut, out_port_data_out);
 	
 	ram RAM(Mdatain, BusMuxInMDR, MARout[8:0], clock, enableRAM, Read);
 
-	SelectEncodeLogic SEL(IRout, Gra, Grb, Grc, Rin, Rout, BAout, C_sign_extended, Rins, Routs);
+	SelectEncodeLogic SEL(IR_data_out, Gra, Grb, Grc, Rin, Rout, BAout, C_sign_extended, Rins, Routs);
 
 	MDR mdr(clear, clock, enableMDR, Read, BusMuxOut, Mdatain, BusMuxInMDR);
 
@@ -84,19 +79,13 @@ input clock, stop, clear,
            BusMuxInHI, BusMuxInLO, BusMuxInZHigh, BusMuxInZLow, BusMuxInPC, BusMuxInMDR, BusMuxIn_InPort, C_sign_extended,
            encoderOut,
 			  BusMuxOut);
+	
+	wire [4:0] opcode;
 
    ALU alu(clear, clock, opcode, Yout, BusMuxOut, Zout[31:0], Zout[63:32]);
 	
-	ControlUnit CU(PC_out,ZHigh_out,MDR_out,MAR_enable,PC_enable,MDR_enable,IR_enable,Y_enable,IncPC,Read,
-	HI_enable,LO_enable,HI_out,LO_out,Z_enable,C_out,RAM_write_enable,Gra,Grb,Grc,R_in,R_out,BAout,
-	con_in,in_port_enable,out_port_enable,in_port_out,Run,R_enables,IR_data_out,clock,clear,stop);
-
-	always @(BAout)
-	begin
-		 if (BAout == 1)
-		 begin
-
-		 end
-	end
+	ControlUnit CU(PCout,Zhighout, MDRout,enableMAR,enablePC,enableMDR,enableIR,enableY,IncPC,Read,
+	enableHI,enableLO,HIout,LOout,enableZ,Cout,enableRAM,Gra,Grb,Grc,Rin,Rout,BAout,
+	conIn,enableInPort,enableOutPort,InPort_Out,Run, Zlowout, IR_data_out,clock,clear,stop);
               
 endmodule
